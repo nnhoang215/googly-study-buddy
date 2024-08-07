@@ -1,0 +1,3 @@
+This lib folder contains all utility fuctions. 
+
+=> For example, utils.ts is where 'cn' helper is defined

@@ -1,0 +1,7 @@
+{
+  "extends": ["next/core-web-vitals", "next", "prettier"],
+
+  "rules": {
+    "max-len": [2, 120, 8]
+  }
+}
