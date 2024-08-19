@@ -1,0 +1,1 @@
+Sidebar work by salimi-my https://github.com/salimi-my/shadcn-ui-sidebar built on top of shadcn/ui

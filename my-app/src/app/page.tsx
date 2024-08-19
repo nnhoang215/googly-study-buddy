@@ -10,7 +10,7 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
       <strong>You upload materials, I make flashcards for you. Simple as that.</strong>
       <Image width="300" alt="logo" height="300" src={mainLogo} />
-      <Link href="/generate-flashcards">
+      <Link href="/generate">
         <Button className="m-10">Start Studying</Button>
       </Link>
     </main>

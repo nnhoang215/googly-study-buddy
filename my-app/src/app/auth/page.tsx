@@ -52,7 +52,7 @@ export default function AuthLoginPage() {
             <CardHeader>
               <CardTitle>Sign Up</CardTitle>
               <CardDescription>
-                Sign up here, it's free. Selling ur info btw 😈
+                Sign up here, it&apos;s free. Selling ur info btw 😈
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-2">
