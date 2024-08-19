@@ -51,19 +51,19 @@ export function getMenuList(pathname: string): Group[] {
           icon: SquarePen,
           submenus: [
             {
-              href: "/posts",
+              href: "/generate/flashcards",
               label: "Flashcards",
-              active: pathname === "/posts"
+              active: pathname === "/generate/flashcards"
             },
             {
-              href: "/posts/new",
+              href: "/generate/quizzes",
               label: "Quizzes",
-              active: pathname === "/posts/new"
+              active: pathname === "/generate/quizzes"
             }
           ]
         },
         {
-          href: "/categories",
+          href: "/modules",
           label: "Modules",
           active: pathname.includes("/categories"),
           icon: Bookmark,
@@ -74,7 +74,8 @@ export function getMenuList(pathname: string): Group[] {
           label: "Tags",
           active: pathname.includes("/tags"),
           icon: Tag,
-          submenus: []
+          submenus: [] 
+          // TOOD: Add tag submenus
         }
       ]
     },

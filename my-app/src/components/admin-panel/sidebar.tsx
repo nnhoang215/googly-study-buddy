@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { PanelsTopLeft } from "lucide-react";
+import Image from "next/image";
+import mainLogo from "/assets/favicon_io/apple-touch-icon.png";
 
 import { cn } from "@/lib/utils";
 import { useStore } from "@/hooks/use-store";
@@ -32,7 +33,7 @@ export function Sidebar() {
           asChild
         >
           <Link href="/" className="flex items-center gap-2"> { /*TODO: Fix this */ }
-            <PanelsTopLeft className="w-6 h-6 mr-1" />
+            <Image className="w-6 h-6" alt="logo" src={mainLogo} />
             <h1
               className={cn(
                 "font-bold text-lg whitespace-nowrap transition-[transform,opacity,display] ease-in-out duration-300",
@@ -41,7 +42,7 @@ export function Sidebar() {
                   : "translate-x-0 opacity-100"
               )}
             >
-              Brand
+              Googly
             </h1>
           </Link>
         </Button>
