@@ -1,5 +1,5 @@
 # googly-study-buddy
-
+You upload materials, I make flashcards for you. Simple as that.
 ## Project Preview Screenshots
 
 ### Login
