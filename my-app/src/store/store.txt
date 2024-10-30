@@ -1,0 +1,1 @@
+the /store folder is for state management like zustand (optional)

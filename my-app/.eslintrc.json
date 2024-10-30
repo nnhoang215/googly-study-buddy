@@ -1,7 +1,10 @@
 {
   "extends": ["next/core-web-vitals", "next", "prettier"],
-
+  "plugins": ["import"],
   "rules": {
-    "max-len": [2, 120, 8]
+    "max-len": [2, 120, 8],
+    "import/no-unresolved": 2,
+    "import/no-commonjs": 2,
+    "import/extensions": ["ignorePackages"]
   }
 }
