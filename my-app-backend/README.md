@@ -33,3 +33,6 @@ Run the production build (Must be built first).
 ## Additional Notes
 
 - If `npm run dev` gives you issues with bcrypt on MacOS you may need to run: `npm rebuild bcrypt --build-from-source`. 
+
+
+### Credits

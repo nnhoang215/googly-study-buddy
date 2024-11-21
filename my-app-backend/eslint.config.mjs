@@ -41,16 +41,16 @@ export default tseslint.config(
       'max-len': [
         'warn',
         {
-          'code': 80
+          'code': 120,
         }
       ],
       '@stylistic/ts/semi': ['warn'],
       'comma-dangle': ['warn', 'always-multiline'],
-      'no-console': 1,
+      'no-console': 0,
       'no-extra-boolean-cast': 0,
       'indent': ['warn', 2],
       'quotes': ['warn', 'single'],
-      'n/no-process-env': 1,
+      'n/no-process-env': 0,
       'n/no-missing-import': 0,
       'n/no-unpublished-import': 0
     },

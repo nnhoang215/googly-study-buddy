@@ -1,24 +1,22 @@
 {
   "name": "my-app-backend",
   "version": "0.0.0",
+  "main": "dist/src/index.js",
   "scripts": {
-    "build": "npx ts-node ./scripts/build.ts",
-    "dev": "NODE_ENV=development npx ts-node ./src",
-    "dev:hot": "nodemon --exec \"npm run dev\" --watch ./src -e ts",
+    "build": "npx tsc",
+    "dev": "NODE_ENV=development dotenvx run npx tsx watch src",
     "lint": "npx eslint ./src",
-    "lint:tests": "npx eslint ./spec",
-    "start": "NODE_ENV=production node -r ./preload.js ./dist",
-    "test": "NODE_ENV=test npx ts-node ./spec",
-    "test:hot": "nodemon --exec \"npm run test\" --watch ./src --watch ./spec -e ts"
+    "start": "NODE_ENV=production  dotenvx run node -r ./dist/src/index.js"
   },
   "engines": {
     "node": ">=16.0.0"
   },
   "type": "module",
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.24.2",
+    "@google/generative-ai": "^0.21.0",
     "@types/helmet": "^4.0.0",
     "cookie-parser": "^1.4.7",
-    "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "express-async-errors": "^3.1.1",
     "helmet": "^8.0.0",

@@ -1,12 +1,7 @@
-import logger from 'jet-logger';
+import config from './config.js';
+import { app } from './server.js';
 
-import EnvVars from '@src/common/EnvVars';
-import server from './server';
-
+const port = config.port ?? 3000;
 
 // **** Run **** //
-
-const SERVER_START_MSG = ('Express server started on port: ' + 
-  EnvVars.Port.toString());
-
-server.listen(EnvVars.Port, () => logger.info(SERVER_START_MSG));
+app.listen(port, () => console.log(`Server is running on port ${port}`));
