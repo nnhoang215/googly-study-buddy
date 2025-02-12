@@ -11,6 +11,7 @@ interface Config {
   port: number;
   geminiApiKey: string;
   host: string;
+  mongoURI: string;
 };
 
 const config: Config = {
@@ -18,6 +19,7 @@ const config: Config = {
   port: parseInt(process.env.PORT ?? '3000'),
   geminiApiKey: process.env.GEMINI_API_KEY ?? '',
   host: process.env.HOST ?? 'localhost',
+  mongoURI: process.env.MONGO_URI ?? '',
 };
 
 export default config;

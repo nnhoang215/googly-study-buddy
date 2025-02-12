@@ -2,7 +2,10 @@ import express from 'express';
 import type { Request, Response } from 'express';
 import { GoogleGenerativeAI, type GenerateContentResult } from '@google/generative-ai';
 // import { GoogleAIFileManager } from '@google/generative-ai/server';
+import mongoose from 'mongoose';
 import config from './config.js';
+import User from './models/users.js';
+
 const app = express();
 
 // eslint-disable-next-line max-len
@@ -22,7 +25,6 @@ for (const variable of requiredVariables) {
 }
 
 const apiKey = process.env.GEMINI_API_KEY ?? '';
-
 const genAI = new GoogleGenerativeAI(apiKey);
 const model = genAI.getGenerativeModel({model: 'gemini-1.5-flash'});
 // const fileManager = new GoogleAIFileManager(apiKey);
@@ -125,6 +127,7 @@ app.post('/gemini-api/generate', async (req : Request<{}, {}, GenerateRequestBod
   
 });
 
+
 function bundleFlashCardInformation(content: Record<string, string>[]) : FlashCard[] {
   return content.map(item => ({
     question: item.question,
@@ -144,3 +147,60 @@ interface GenerateRequestBody {
   quantity?: number;
   setting?: string;
 }
+
+interface AuthRequestBody {
+  username: string;
+  password: string;
+}
+
+const mongoURI = config.mongoURI ?? '';
+const connectToDatabase = async () => {
+  try {
+    await mongoose.connect(mongoURI);
+    console.log('Connected to DB');
+  } catch (error) {
+    console.log('Failed to connect to DB', error);
+  }
+};
+
+
+connectToDatabase();
+let user;
+
+// Generate JWT
+
+
+// Login endpoint
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+app.post('/auth/login', async (req : Request<{}, {}, AuthRequestBody>, res : Response) => {
+  const { username, password } = req.body;
+
+  user = await User.find({username: username, hashed_password: password}).exec();
+  if (user.length > 0) {
+    res.json({
+      status: 'success',
+      message: 'Successfully logged in',
+      username: user[0].username,
+    });
+
+    console.log('User logged in');
+    console.log(user);
+  } else {
+    res.json({
+      status: 'error',
+      message: 'Failed to login',
+    });
+
+    console.log('Failed to login');
+  }
+});
+
+app.get('/auth/logout', (_, res) => {
+  user = null;
+  res.json({
+    status: 'success',
+    message: 'Successfully logged out',
+  });
+
+  console.log('User logged out');
+});
