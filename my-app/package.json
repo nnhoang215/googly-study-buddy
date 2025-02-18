@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@google/generative-ai": "^0.17.1",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-collapsible": "^1.1.0",
@@ -27,10 +26,11 @@
     "dotenv": "^16.4.5",
     "embla-carousel-react": "^8.2.0",
     "lucide-react": "^0.424.0",
-    "next": "^14.2.12",
+    "next": "^15.0.3",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^2.4.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8",
