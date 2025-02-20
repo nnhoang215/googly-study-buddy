@@ -1,6 +1,8 @@
 import type { Request, Response } from 'express';
 import type { LoginRequestBody } from '../interfaces/auth.js';
 import User from '../models/users.js';
+import jwt from 'jsonwebtoken';
+import config from '../config.js';
 
 const login = async (req: Request, res: Response) : Promise<void> => {
   try {
@@ -9,20 +11,22 @@ const login = async (req: Request, res: Response) : Promise<void> => {
     const user = await User.findOne({username: username});
     
     console.log(user);
-    // Check if there's a User returned
+    // Check if there's an User returned
     if (!user) {
       res.status(401).send('Invalid username or password');
       return;
     }
 
-    // TODO: use Bcrypt
     const isPasswordValid = hashedPassword == user.hashedPassword;
 
     if (!isPasswordValid) {
       res.status(401).send('Invalid username or password');
     } else {
-      // TODO: use jwt
-      const token = `username: ${user.username}`;
+      const payload = {
+        username: user.username,
+      };
+      const token = jwt.sign(payload, config.hmacKey, {expiresIn: 60});
+
       res.json({token});
     }
   } catch (e) {
@@ -33,7 +37,7 @@ const login = async (req: Request, res: Response) : Promise<void> => {
 
 // TODO: logout
 const logout = (req: Request, res: Response) : void => {
-  // TODO: clear token
+  // TODO: invalidate token
 
   res.json({
     status: 'success',

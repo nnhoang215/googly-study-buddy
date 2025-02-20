@@ -12,6 +12,7 @@ interface Config {
   geminiApiKey: string;
   host: string;
   mongoURI: string;
+  hmacKey: string;
 };
 
 const config: Config = {
@@ -20,6 +21,7 @@ const config: Config = {
   geminiApiKey: process.env.GEMINI_API_KEY ?? '',
   host: process.env.HOST ?? 'localhost',
   mongoURI: process.env.MONGO_URI ?? '',
+  hmacKey: process.env.HMAC_KEY ?? '',
 };
 
 export default config;
