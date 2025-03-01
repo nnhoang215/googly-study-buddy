@@ -3,10 +3,12 @@ import type { LoginRequestBody } from '../interfaces/auth.js';
 import User from '../models/users.js';
 import jwt from 'jsonwebtoken';
 import config from '../config.js';
+import bcrypt from 'bcrypt';
 
 const login = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { username, hashedPassword } = req.body as LoginRequestBody;
+    console.log('req.body:' + username);
 
     const user = await User.findOne({username: username});
     
@@ -17,7 +19,7 @@ const login = async (req: Request, res: Response) : Promise<void> => {
       return;
     }
 
-    const isPasswordValid = hashedPassword == user.hashedPassword;
+    const isPasswordValid = bcrypt.compareSync(hashedPassword, user.hashedPassword);
 
     if (!isPasswordValid) {
       res.status(401).send('Invalid username or password');

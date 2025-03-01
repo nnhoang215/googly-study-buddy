@@ -6,8 +6,6 @@ import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import run from "@/services/gemini-controllers";
-
 import {
   Form,
   FormControl,
@@ -25,52 +23,61 @@ export default function GenFlashcardsHome() {
     <main className="flex min-h-screen flex-col items-center justify-center p-24">
       Files taking: pdf, video, audio, image, text. <br />
       Description: put in instructions on how I could make flashcards that are best suited for you.
-      <UploadZone/>
+      <MaterialUploadZone/>
     </main>
   );
 }
 
 const FormSchema = z.object({
-  set_description: z
+  textDescription: z
     .string()
     .min(10, {
-      message: "Bio must be at least 10 characters.",
+      message: "Description must be at least 10 characters.",
     })
-    .max(160, {
-      message: "Bio must not be longer than 30 characters.",
+    .max(500, {
+      message: "Bio must not be longer than 500 characters.",
     }),
+  quantity: z.coerce.number().max(30, {
+    message: "Quantity must not be more than 30.",
+  }),
+  setting: z.string().max(100, {
+    message: "Setting must not be longer than 100 characters.",
+  }),
 });
 
-function UploadZone() {
+function MaterialUploadZone() {
   const {toast} = useToast();
-  const [file, setFile] = useState<File | null>(null);
+  // const [file, setFile] = useState<File | null>(null);
 
   const form =  useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0]);
-    }
-  };
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files && event.target.files[0]) {
+  //     setFile(event.target.files[0]);
+  //   }
+  // };
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data.set_description);
-    if (!file) {
-      toast({
-        title: "Error",
-        description: "Please upload a file to continue.",
-      });
+    console.log(data.textDescription);
 
-      return;
-    }
+    // TODO: support for uploading files
+    // if (!file) {
+    //   toast({
+    //     title: "Error",
+    //     description: "Please upload a file to continue.",
+    //   });
+
+    //   return;
+    // }
 
     const formData = {
       ...data,
-      file: file.name,
-      fileLink: "/Users/nguyennhathoang_1/Desktop/" + file.name,
-      fileType: file.type,
+      // TOOD: support for uploading files
+      // file: file.name,
+      // fileLink: "/Users/nguyennhathoang_1/Desktop/" + file.name,
+      // fileType: file.type,
     };
 
     toast({
@@ -81,18 +88,40 @@ function UploadZone() {
         </pre>
       ),
     });
-
-    run(formData.fileLink, formData.fileType);
   }
-  
-
 
   return (
     <div className="block relative w-full space-y-6">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <InputFile onFileChange={handleFileChange}/>
+          {/* //TODO: support for uploading files <InputFile onFileChange={handleFileChange}/> */}
           <TextareaForm form={form}/>
+          <FormField
+            control={form.control}
+            name="quantity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantity</FormLabel>
+                <FormControl>
+                  <Input type="number" placeholder="Number of flashcards you want (< 30)" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="setting"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Setting</FormLabel>
+                <FormControl>
+                  <Input type="text" placeholder="Ex: stick to the content | explore related topics" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
           <Button type="submit">Submit</Button>
         </form>
       </Form>
@@ -100,12 +129,11 @@ function UploadZone() {
   );
 };
 
-
 export function TextareaForm({form} : {form: ReturnType<typeof useForm<z.infer<typeof FormSchema>>>}) {
   return (
     <FormField
       control={form.control}
-      name="set_description"
+      name="textDescription"
       render={({ field }) => (
         <FormItem>
           <FormLabel>Set Description</FormLabel>

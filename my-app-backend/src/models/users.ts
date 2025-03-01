@@ -10,19 +10,25 @@ interface IUser extends mongoose.Document {
 const userSchema = new mongoose.Schema<IUser>({
   username: String,
   hashedPassword: String,
-  salt: String,
 });
 
 const User = mongoose.model<IUser>('User', userSchema);
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { username, hashedPassword, salt } = req.body as IUser;
+    const { username, hashedPassword} = req.body as IUser;
+    
+    const existingUser = await User.findOne({ username: username });
 
-    const user = new User({ username, hashedPassword, salt});
+    if (existingUser) {
+      res.status(409).send('Username already exists');
+      return;
+    }
+
+    const user = new User({ username, hashedPassword});
     const result = await user.save();
 
-    console.log(result.username, result.hashedPassword, result.salt);
+    console.log(result.username, result.hashedPassword);
     res.status(201).send('User created successfully');
   } catch(error) {
     console.log(error);
