@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 import type { Request, Response } from 'express';
 
+// WHY?
 interface IUser extends mongoose.Document {
   username: string;
   hashedPassword: string;
-  salt: string;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
