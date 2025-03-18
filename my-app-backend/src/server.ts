@@ -5,6 +5,8 @@ import cors from 'cors';
 import userRouter from './routes/userRoutes.js';
 import authRouter from './routes/authRoutes.js';
 import geminiRouter from './routes/geminiRoutes.js';
+import flashCardRouter from './routes/flashcardRoutes.js';
+import tagRouter from './routes/tagRoutes.js';
 
 const app = express();
 
@@ -29,8 +31,10 @@ const connectToDatabase = async () => {
 
 connectToDatabase();
 
-app.use('/users', userRouter);
+app.use('/user', userRouter);
 app.use('/auth', authRouter);
 app.use('/gemini-api', geminiRouter);
+app.use('/flashcards', flashCardRouter);
+app.use('/tags', tagRouter);
 
 export { app };
