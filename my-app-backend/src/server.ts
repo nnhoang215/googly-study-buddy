@@ -7,6 +7,7 @@ import authRouter from './routes/authRoutes.js';
 import geminiRouter from './routes/geminiRoutes.js';
 import flashCardRouter from './routes/flashcardRoutes.js';
 import tagRouter from './routes/tagRoutes.js';
+import { authorizeToken } from './controllers/authController.js';
 
 const app = express();
 
@@ -30,11 +31,14 @@ const connectToDatabase = async () => {
 };
 
 connectToDatabase();
-
-app.use('/user', userRouter);
 app.use('/auth', authRouter);
-app.use('/gemini-api', geminiRouter);
-app.use('/flashcards', flashCardRouter);
-app.use('/tags', tagRouter);
+
+// Protected endpoints:
+app.use('/api', authorizeToken);
+
+app.use('/api/user', userRouter);
+app.use('/api/gemini-api', geminiRouter);
+app.use('/api/flashcards', flashCardRouter);
+app.use('/api/tags', tagRouter);
 
 export { app };

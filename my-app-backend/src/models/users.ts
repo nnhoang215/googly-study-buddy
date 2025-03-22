@@ -12,5 +12,7 @@ const userSchema = new mongoose.Schema<IUser>({
 
 const User = mongoose.model<IUser>('User', userSchema);
 
+// Think of how to implement current user and other states
+
 export default User;
 export type { IUser };

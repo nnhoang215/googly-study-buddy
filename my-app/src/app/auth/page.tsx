@@ -35,7 +35,7 @@ async function registerUserWithUsernameAndPassword(_username: string, _hashedPas
   // TODO: remove
   console.log("register content: " + _username + _hashedPassword);
   try {
-    const response = await fetch(url + 'users/register', {
+    const response = await fetch(url + 'api/user/register', {
       method: "POST",
       headers: {
         "Content-Type": "application/json"

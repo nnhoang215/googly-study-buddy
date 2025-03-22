@@ -27,7 +27,6 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 const getUserByUsername = async (req: Request, res: Response): Promise<void> => {
   try {
     const _user = await User.findOne({ username: req.params.username });
-
     
     if (_user) {
       console.log('Response: ', _user ? _user.id : 'User null');

@@ -1,4 +1,4 @@
-import type { Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import type { LoginRequestBody } from '../interfaces/auth.js';
 import User from '../models/users.js';
 import jwt from 'jsonwebtoken';
@@ -48,4 +48,30 @@ const logout = (req: Request, res: Response) : void => {
 
   console.log('User logged out');
 };
-export { login, logout };
+
+// TODO: Authorization ie verify if token is valid
+const authorizeToken = (req: Request, res: Response, next: NextFunction) : void => {
+  // Extracting bearer token
+  const authHeader = req.headers.authorization;
+
+  // Checking if there is actually a bearer token provided
+  if (authHeader) {
+    const token = authHeader.split(' ')[1];
+    try {
+      const decodedToken = jwt.verify(token, config.hmacKey);
+      req.user = decodedToken; // Attach the decoded user info to the request object
+      next();
+    } catch (e) {
+      if (e instanceof jwt.JsonWebTokenError) {
+        res.status(401).send('Invalid token');
+      } else if (e instanceof jwt.TokenExpiredError) {
+        res.status(401).send('Token has expired');
+      } else {
+        res.status(500).send('Internal server error');
+      }
+    }
+  } else {
+    res.status(401).send('No token provided');
+  }
+};
+export { login, logout, authorizeToken };
