@@ -63,7 +63,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     const updatedUser = await User.findByIdAndUpdate(
       id,
       { username, hashedPassword },
-      { new: true, runValidators: true }
+      { new: true, runValidators: true },
     );
 
     if (updatedUser) {

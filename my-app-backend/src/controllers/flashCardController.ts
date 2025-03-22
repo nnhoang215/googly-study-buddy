@@ -2,7 +2,6 @@ import FlashCard, { type IFlashCard } from '../models/flashcards.js';
 import { isValidObjectId, type ObjectId } from 'mongoose';
 import type { Request, Response } from 'express';
 
-
 // TODO: implement this method
 
 
@@ -12,9 +11,14 @@ const getFlashCardsByTag = async (req: Request, res: Response): Promise<void> =>
     if (!Array.isArray(tags) || !tags.every(tag => isValidObjectId(tag))) {
       res.status(400).send('Invalid tag Ids');
     }
-     
-    const _flashCards = await FlashCard.find({tags: { $in: tags}});
-    res.status(201).send(_flashCards);
+    if (req.user) {
+      const owner_id = req.user.id;
+      const _flashCards = await FlashCard.find({tags: { $in: tags}});
+      res.status(201).send(_flashCards);
+    } else {
+      res.status(401).send('Missing token');
+    }
+    
   } catch (e) {
     console.log(e);
   }

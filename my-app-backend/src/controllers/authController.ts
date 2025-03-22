@@ -25,9 +25,10 @@ const login = async (req: Request, res: Response) : Promise<void> => {
       res.status(401).send('Invalid username or password');
     } else {
       const payload = {
+        id: user._id,
         username: user.username,
       };
-      const token = jwt.sign(payload, config.hmacKey, {expiresIn: 60});
+      const token = jwt.sign(payload, config.hmacKey, {expiresIn: 600});
 
       res.json({token});
     }
