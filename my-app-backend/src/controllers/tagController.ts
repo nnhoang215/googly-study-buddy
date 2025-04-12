@@ -23,6 +23,9 @@ const createTag = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+// TODO: implement
+// function getMyTags
+
 const getTagById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
