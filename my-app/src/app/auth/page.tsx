@@ -16,10 +16,11 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import mainLogo from "../../../assets/googly_study_buddy_logo.png";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useForm, Controller, FieldValues } from "react-hook-form";
 import bcrypt from "bcryptjs";
 import U from '@/utils';
-// import { z } from "zod";
+import { useEffect } from 'react';
 
 // TODO: move bcrypt here
 function hashPasswordWithSalt(password: string, salt: string) : string {
@@ -51,37 +52,50 @@ async function registerUserWithUsernameAndPassword(_username: string, _hashedPas
 }
 
 async function authenticateUsernameAndPassword(_username: string, _password: string) {
-  const url = DEV_API_URL;
   const content = {
     username: _username,
     // TODO: change to 'password' or hash this shit
     hashedPassword: _password,
   };
 
-  try {
-    const response = await fetch(url + 'auth/login', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(content)
-    }); 
+  const response = await fetch(DEV_API_URL + 'auth/login', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(content),
+    credentials: 'include'
+  }); 
 
-    const jsonRes = await response.json();
-
-    // TODO: there are better ways to store jwt token, but for now, we store it in localStorage
-    localStorage.setItem('authToken', jsonRes.token);
-    // TODO: remove
-    U.log('Stored in local storage: ' + localStorage.getItem('authToken'));
-  } catch (e) {
-    console.log(e);
+  if (!response.ok) {
+    throw new Error('Failed to authenticate');
   }
-
+  
+  return response.json();
 }
 
 // TODO: try the recommmend async bcrypt method, rn we're using sync for simplicity.
 export default function AuthLoginPage() {
   const { control, handleSubmit } = useForm();
+  const router = useRouter();
+  
+  /**
+   * This is here to allow logged in user to not have to login again but redirected
+   */
+  useEffect(() => {
+    const verifyToken = async() => {
+      const response = await fetch(DEV_API_URL + 'auth/verify_token', {
+        method: 'GET',
+        credentials: 'include',
+      });
+
+      if (response.ok) {
+        router.push('/');
+      }
+    };
+
+    verifyToken();
+  }, [router]);
 
   const onRegistrationSubmit = async (data : FieldValues) => {
     // TODO: input validation
@@ -93,7 +107,12 @@ export default function AuthLoginPage() {
 
   const onLoginSubmit = async (data : FieldValues) => {
     console.log('LogIn: ' + data.loginUsername + data.loginPassword);
-    await authenticateUsernameAndPassword(data.loginUsername, data.loginPassword);
+    try {
+      await authenticateUsernameAndPassword(data.loginUsername, data.loginPassword);
+      router.push('/');
+    } catch(e) {
+      console.error('Login failed: ', e);
+    }
   };
 
   return (
@@ -121,7 +140,8 @@ export default function AuthLoginPage() {
                   <Controller
                     name="loginUsername"
                     control={control}
-                    render={({ field }) => <Input id="loginUsername" placeholder="austin_nguyen01"{...field} />}
+                    defaultValue=""
+                    render={({ field }) => <Input id="loginUsername" {...field} />}
                   />
                 </div>
                 <div className="space-y-1">
@@ -129,7 +149,8 @@ export default function AuthLoginPage() {
                   <Controller
                     name="loginPassword"
                     control={control}
-                    render={({ field }) => <Input id="loginPassword" type="password" placeholder="@RickRolled" {...field} />}
+                    defaultValue=""
+                    render={({ field }) => <Input id="loginPassword" type="password" {...field} />}
                   />
                 </div>
                 <Button type="submit">Login</Button> {/* TODO */}
@@ -140,7 +161,7 @@ export default function AuthLoginPage() {
           </Card>
         </TabsContent>
 
-        {/* SIGNUP TAB */}
+        {/* SIGN UP TAB */}
         <TabsContent value="signup">
           <Card>
             <CardHeader>
@@ -155,6 +176,7 @@ export default function AuthLoginPage() {
                   <Label htmlFor="signupUsername">Username</Label>
                   <Controller
                     name="signupUsername"
+                    defaultValue=""
                     control={control}
                     render={({ field }) => <Input id="signupUsername" {...field} />}
                   />
@@ -163,6 +185,7 @@ export default function AuthLoginPage() {
                   <Label htmlFor="signupPassword">New password</Label>
                   <Controller
                     name="signupPassword"
+                    defaultValue=""
                     control={control}
                     render={({ field }) => <Input id="signupPassword" type="password" {...field} />}
                   />
