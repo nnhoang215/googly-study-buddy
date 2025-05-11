@@ -10,7 +10,6 @@ import bcrypt from 'bcrypt';
 const login = async (req: Request, res: Response) : Promise<void> => {
   try {
     const { username, hashedPassword } = req.body as LoginRequestBody;
-    console.log('req.body:' + username);
 
     const user = await User.findOne({username: username});
     
@@ -36,7 +35,7 @@ const login = async (req: Request, res: Response) : Promise<void> => {
         maxAge: 3600000,
       });
 
-      res.json({ success: true, message: 'Logged in successfully'});
+      res.json({ success: true, message: 'Logged in successfully', current_user: payload});
     }
   } catch (e) {
     console.log(e);
@@ -56,14 +55,17 @@ const logout = (req: Request, res: Response) : void => {
   console.log('User logged out');
 };
 
-// TODO: Authorization ie verify if token is valid
+/**
+ * This method verifies the token provided. If token:
+ * 
+ * valid: decodeToken and add user object to the request
+ * invalid: end action and return appropriate error message
+ */
 const authorizeToken = (req: Request, res: Response, next: NextFunction) : void => {
-  // Extracting bearer token
-  const authHeader = req.headers.authorization;
+  const token = req?.cookies?.authToken;
 
   // Checking if there is actually a bearer token provided
-  if (authHeader) {
-    const token = authHeader.split(' ')[1];
+  if (token) {
     try {
       const decodedToken = jwt.verify(token, config.hmacKey);
       req.user = decodedToken; // Attach the decoded user info to the request object
@@ -84,14 +86,12 @@ const authorizeToken = (req: Request, res: Response, next: NextFunction) : void 
 
 const verifyToken = (req: Request, res: Response) : Promise<void> => {
   const token = req?.cookies?.authToken;
-  console.log('TOKEN:');
-  console.log(token);
   if (!token) {
     res.status(401).json({ error: 'Unauthorized' });
   } else {
     try {
       const decodedToken = jwt.verify(token, config.hmacKey);
-      res.status(200).json({ success: true, user: decodedToken});
+      res.status(200).json({ success: true, current_user: decodedToken});
       return;
     } catch (e) {
       console.log(e);

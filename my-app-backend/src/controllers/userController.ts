@@ -29,7 +29,6 @@ const getUserByUsername = async (req: Request, res: Response): Promise<void> => 
     const _user = await User.findOne({ username: req.params.username });
     
     if (_user) {
-      console.log('Response: ', _user ? _user.id : 'User null');
       res.status(200).send(_user);
     } else {
       console.log(`No user found with username: ${req.params.username}`);
