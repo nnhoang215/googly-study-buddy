@@ -8,6 +8,7 @@ import geminiRouter from './routes/geminiRoutes.js';
 import flashCardRouter from './routes/flashcardRoutes.js';
 import tagRouter from './routes/tagRoutes.js';
 import { authorizeToken } from './controllers/authController.js';
+import cookieParser from 'cookie-parser';
 
 const mongoURI = config.mongoURI ?? '';
 const connectToDatabase = async () => {
@@ -22,7 +23,13 @@ connectToDatabase();
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+  origin: 'http://localhost:3001',
+  credentials: true,
+};
+app.use(cors(corsOptions));
+app.use(cookieParser());
 
 // Test Endpoint
 app.get('/', (req, res) => {

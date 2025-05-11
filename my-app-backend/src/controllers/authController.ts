@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { NextFunction, Request, Response } from 'express';
 import type { LoginRequestBody } from '../interfaces/auth.js';
 import User from '../models/users.js';
@@ -27,9 +29,14 @@ const login = async (req: Request, res: Response) : Promise<void> => {
       const payload = {
         username: user.username,
       };
-      const token = jwt.sign(payload, config.hmacKey, {expiresIn: 60});
+      const token = jwt.sign(payload, config.hmacKey, {expiresIn: '7d'});
+      res.cookie('authToken', token, {
+        httpOnly: true,
+        sameSite: 'strict',
+        maxAge: 3600000,
+      });
 
-      res.json({token});
+      res.json({ success: true, message: 'Logged in successfully'});
     }
   } catch (e) {
     console.log(e);
@@ -74,4 +81,23 @@ const authorizeToken = (req: Request, res: Response, next: NextFunction) : void 
     res.status(401).send('No token provided');
   }
 };
-export { login, logout, authorizeToken };
+
+const verifyToken = (req: Request, res: Response) : Promise<void> => {
+  const token = req?.cookies?.authToken;
+  console.log('TOKEN:');
+  console.log(token);
+  if (!token) {
+    res.status(401).json({ error: 'Unauthorized' });
+  } else {
+    try {
+      const decodedToken = jwt.verify(token, config.hmacKey);
+      res.status(200).json({ success: true, user: decodedToken});
+      return;
+    } catch (e) {
+      console.log(e);
+      res.status(401).json({ error: 'Invalid token' });
+    }
+  }
+};
+
+export { login, logout, authorizeToken, verifyToken };
