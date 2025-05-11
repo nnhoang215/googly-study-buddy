@@ -6,6 +6,6 @@ const flashCardRouter = Router();
 
 // Define the route to create multiple flashcards
 flashCardRouter.post('/save', createFlashCards);
-flashCardRouter.get('/show', getFlashCardsByTag);
+flashCardRouter.post('/get', getFlashCardsByTag);
 
 export default flashCardRouter;

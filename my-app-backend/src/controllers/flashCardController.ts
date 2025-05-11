@@ -1,23 +1,34 @@
+/* eslint-disable n/no-extraneous-import */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import FlashCard, { type IFlashCard } from '../models/flashcards.js';
 import { isValidObjectId, type ObjectId } from 'mongoose';
 import type { Request, Response } from 'express';
+import Tag from '@src/models/tags.js';
 
 
 // TODO: implement this method
 const getFlashCardsByTag = async (req: Request, res: Response): Promise<void> => {
   try {
     // TODO: Verify that these are tags owned by the user in token
-    const tags = req.body as ObjectId[];
+    const tags = req.body.tags as ObjectId[];
     if (!Array.isArray(tags) || !tags.every(tag => isValidObjectId(tag))) {
       res.status(400).send('Invalid tag Ids');
     }
-    if (req.user) {
-      const _flashCards = await FlashCard.find({tags: { $in: tags}});
+    if (req.current_user && tags != undefined) {
+      const userId = req.current_user.id;
+      const userTags = await Tag.find({
+        _id: { $in: tags},
+        ownerId: userId,
+      });
+      const userTagIds = userTags.map(tag => tag._id);
+      const _flashCards = await FlashCard.find({
+        tags: { $in: userTagIds },
+      });
       res.status(201).send(_flashCards);
     } else {
-      res.status(401).send('Missing token');
+      console.log('Cannot perform bro!');
     }
-    
   } catch (e) {
     console.log(e);
   }

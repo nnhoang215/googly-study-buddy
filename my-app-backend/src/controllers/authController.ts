@@ -27,6 +27,7 @@ const login = async (req: Request, res: Response) : Promise<void> => {
     } else {
       const payload = {
         username: user.username,
+        id: user.id,
       };
       const token = jwt.sign(payload, config.hmacKey, {expiresIn: '7d'});
       res.cookie('authToken', token, {
@@ -46,6 +47,11 @@ const login = async (req: Request, res: Response) : Promise<void> => {
 // TODO: logout
 const logout = (req: Request, res: Response) : void => {
   // TODO: invalidate token
+
+  res.clearCookie('authToken', {
+    httpOnly: true,
+    sameSite: 'strict',
+  });
 
   res.json({
     status: 'success',
@@ -68,7 +74,7 @@ const authorizeToken = (req: Request, res: Response, next: NextFunction) : void 
   if (token) {
     try {
       const decodedToken = jwt.verify(token, config.hmacKey);
-      req.user = decodedToken; // Attach the decoded user info to the request object
+      req.current_user = decodedToken; // Attach the decoded user info to the request object
       next();
     } catch (e) {
       if (e instanceof jwt.JsonWebTokenError) {
