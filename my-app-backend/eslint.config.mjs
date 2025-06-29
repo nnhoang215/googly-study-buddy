@@ -33,10 +33,12 @@ export default tseslint.config(
   {
     rules: {
       '@typescript-eslint/explicit-member-accessibility': 'warn',
+      "@typescript-eslint/prefer-nullish-coalescing": 'off',
       '@typescript-eslint/no-misused-promises': 0,
       '@typescript-eslint/no-floating-promises': 0,
       '@typescript-eslint/no-confusing-void-expression': 0,
       '@typescript-eslint/no-unnecessary-condition': 0,
+      '@typescript-eslint/no-unused-vars': 0,
       '@typescript-eslint/restrict-template-expressions': [ 'error', { allowNumber: true }],
       'max-len': [
         'warn',

@@ -6,7 +6,9 @@
     "build": "npx tsc",
     "dev": "NODE_ENV=development dotenvx run npx tsx watch src",
     "lint": "npx eslint ./src",
-    "start": "NODE_ENV=production  dotenvx run node -r ./dist/src/index.js"
+    "lint:fix": "npx eslint ./src --fix",
+    "start": "NODE_ENV=production  dotenvx run node -r ./dist/src/index.js",
+    "clean": "rm -rf dist node_modules package-lock.json"
   },
   "engines": {
     "node": ">=16.0.0"

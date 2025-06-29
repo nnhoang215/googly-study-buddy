@@ -1,6 +1,10 @@
 **/node_modules
 dist/
 **/**/*.log
-**/env
+**/*.env
 **/.DS_Store
 .DS_Store
+**/.cursor
+.cursor
+**/*.mdc
+**/.vscode
