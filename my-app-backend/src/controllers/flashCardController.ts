@@ -5,7 +5,28 @@ import FlashCard, { type IFlashCard } from '../models/flashcards.js';
 import { isValidObjectId, type ObjectId } from 'mongoose';
 import type { Request, Response } from 'express';
 import Tag from '@src/models/tags.js';
+import { geminiGenerateFlashCard } from './geminiController.js';
+import type { FlashCard as GeminiFlashCard } from '../interfaces/gemini.js';
 
+const generateFlashCards = async (req: Request, res: Response): Promise<void> => {
+  let flashCards: GeminiFlashCard[] = [];
+  try {
+    flashCards = await geminiGenerateFlashCard(req, res);
+    res.status(201).send(flashCards);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send('Internal server error');
+  }
+
+  if (flashCards.length > 0) {
+    // render a page to review the flashcards
+    // if user approves, save the flashcards
+    // if user rejects, return an error
+    // if user approves, save the flashcards
+  } else {
+    // return an error
+  }
+};
 
 // TODO: implement this method
 const getFlashCardsByTag = async (req: Request, res: Response): Promise<void> => {
@@ -35,7 +56,7 @@ const getFlashCardsByTag = async (req: Request, res: Response): Promise<void> =>
 };
 
 // Need to pass into request a list of flashcards
-const createFlashCards = async (req: Request, res: Response): Promise<void> => {
+const saveFlashCards = async (req: Request, res: Response): Promise<void> => {
   try {
     let count = 0;
     for ( const card of req.body) {
@@ -95,4 +116,4 @@ const deleteFlashCard = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export { getFlashCardsByTag, createFlashCards, updateFlashCard, deleteFlashCard };
+export { getFlashCardsByTag, saveFlashCards, updateFlashCard, deleteFlashCard, generateFlashCards };

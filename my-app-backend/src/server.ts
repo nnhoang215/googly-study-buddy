@@ -2,11 +2,13 @@ import express from 'express';
 import mongoose from 'mongoose';
 import config from './config.js';
 import cors from 'cors';
-import userRouter from './routes/userRoutes.js';
-import authRouter from './routes/authRoutes.js';
-import geminiRouter from './routes/geminiRoutes.js';
-import flashCardRouter from './routes/flashcardRoutes.js';
-import tagRouter from './routes/tagRoutes.js';
+import {
+  authRouter,
+  userRouter,
+  flashCardRouter,
+  geminiRouter,
+  tagRouter,
+} from './routes/index.js';
 import { authorizeToken } from './controllers/authController.js';
 import cookieParser from 'cookie-parser';
 

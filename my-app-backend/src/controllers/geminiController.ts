@@ -26,7 +26,7 @@ function bundleFlashCardInformation(content: Record<string, string>[]) : FlashCa
   }));  
 }
 
-const generateFlashCard = async (req: Request, res: Response) : Promise<void> => {
+const geminiGenerateFlashCard = async (req: Request, res: Response) : Promise<FlashCard[]> => {
   // TODO: Add file upload to the chat history
   // const path = req.get('path') ??'/Users/nguyennhathoang_1/Desktop/cookies.jpg';
   // const mimeType = req.get('mimeType') ?? 'image/jpeg';
@@ -94,17 +94,21 @@ const generateFlashCard = async (req: Request, res: Response) : Promise<void> =>
 
   if (jsonResponse != null) {
     const flashCards = bundleFlashCardInformation(jsonResponse);
-    res.json({
-      status: 'success',
-      environment: config.nodeEnv,
-      flashCards: flashCards,
-      message: 'Successfully generated flash cards',
-    });
+
+    return flashCards;
+    // TODO: handle if this was a direct call to the gemini api
+    // res.json({
+    //   status: 'success',
+    //   flashCards: flashCards,
+    //   message: 'Successfully generated flash cards',
+    // });
   } else {
-    res.json({
-      status: 'error',
-      message: 'Failed to generate flash cards',
-    });
+    // TODO: handle error if this was a direct call to the gemini api
+    // res.json({
+    //   status: 'error',
+    //   message: 'Failed to generate flash cards',
+    // });
+    return [];
   }
 };
 
@@ -118,4 +122,4 @@ const generateFlashCard = async (req: Request, res: Response) : Promise<void> =>
 //   console.log(`Uploaded file: ${file.displayName} as: ${file.name}`);
 //   return file;
 // }
-export { generateFlashCard };
+export { geminiGenerateFlashCard };
